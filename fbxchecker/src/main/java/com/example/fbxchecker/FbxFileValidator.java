@@ -4,6 +4,7 @@ import java.io.File;
 
 public class FbxFileValidator {
     //проверяем файлы на соответствие
+    private static final long MAX_SIZE_MB = 500 * 1024 * 1024;
     private FileNameValidator fileNameValidator;
 
     public FbxFileValidator() {
@@ -16,6 +17,12 @@ public class FbxFileValidator {
         //проверка существования файла
         if(!file.exists()) {
             System.out.println("Файл не найден: " + filepath);
+            return false;
+        }
+
+        // Проверка размера файла
+        if (file.length() > MAX_SIZE_MB) {
+            System.out.println("Ошибка: размер файла превышает 500 MB.");
             return false;
         }
 
