@@ -1,6 +1,10 @@
 package com.example.fbxchecker;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.zip.ZipFile;
 
 public class FbxFileValidator {
     //проверяем файлы на соответствие
@@ -38,5 +42,37 @@ public class FbxFileValidator {
         }
         System.out.println("Файл проверен успешно.");
         return true;
+    }
+
+    public Path extractZipFile(String zipFilePath) throws IOException {
+        // Создаем временную директорию для разархивирования
+        Path tempDir = Files.createTempDirectory("tempDir_");
+
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            zipFile.stream().forEach(entry -> {
+                try {
+                    Path path = tempDir.resolve(entry.getName());
+                    if (entry.isDirectory()) {
+                        Files.createDirectories(path);
+                    } else {
+                        Files.createDirectories(path.getParent());
+                        Files.copy(zipFile.getInputStream(entry), path);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        // Возвращаем путь к временной директории с разархивированными файлами
+        return tempDir;
+    }
+
+    public void deleteTempDirectory(Path tempDir) throws IOException {
+        // Удаляем все файлы и директории во временной папке
+        Files.walk(tempDir)
+                .sorted((a, b) -> b.compareTo(a)) // Сортируем для удаления вложенных файлов сначала
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 }
