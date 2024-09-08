@@ -15,7 +15,7 @@ public class FbxFileValidator {
         this.fileNameValidator = new FileNameValidator();
     }
 
-    public boolean validateZipFile(String filepath) {
+    public boolean validateZipFile(String filepath, ValidationResult result) {
         File file = new File(filepath);
 
         //проверка существования файла
@@ -26,21 +26,21 @@ public class FbxFileValidator {
 
         // Проверка размера файла
         if (file.length() > MAX_SIZE_MB) {
-            System.out.println("Ошибка: размер файла превышает 500 MB.");
+            result.addMessage("Ошибка: размер файла превышает 500 MB.");
             return false;
         }
 
         //проверка расширения архива
         if(!filepath.endsWith(".zip")) {
-            System.out.println("Ошибка: файл не имеет расширения .zip");
+            result.addMessage("Ошибка: файл не имеет расширения .zip");
             return false;
         }
 
-        if(!fileNameValidator.validateFileName(file.getName())) {
-            System.out.println("Ошибка: имя файла не соответствует требованиям.");
+        if(!fileNameValidator.validateFileName(file.getName(), result)) {
+            result.addMessage("Ошибка: имя файла не соответствует требованиям.");
             return false;
         }
-        System.out.println("Файл проверен успешно.");
+        result.addMessage("Файл проверен успешно.");
         return true;
     }
 
@@ -75,4 +75,6 @@ public class FbxFileValidator {
                 .map(Path::toFile)
                 .forEach(File::delete);
     }
+
+
 }

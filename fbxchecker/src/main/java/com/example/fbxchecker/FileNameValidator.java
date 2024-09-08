@@ -4,16 +4,17 @@ import java.util.regex.Pattern;
 
 public class FileNameValidator {
     //проверяем имя файла
-    public boolean validateFileName(String fileName) {
-        if(fileName == null || fileName.isEmpty()) {
-            System.out.println("Имя файла не должно быть пустым");
+    public boolean validateFileName(String fileName, ValidationResult result) {
+        if (fileName == null || fileName.isEmpty()) {
+            result.addMessage("Ошибка: Имя файла не должно быть пустым");
             return false;
         }
 
-        if(!fileName.startsWith("SM_")) {
-            System.out.println("Имя файла должно начинаться с 'SM_'");
+        if (!fileName.startsWith("SM_")) {
+            result.addMessage("Ошибка: Имя файла должно начинаться с 'SM_'");
             return false;
         }
+
 
         // Убираем префикс "SM_" для дальнейших проверок
         String nameWithoutPrefix = fileName.substring(3);
@@ -26,17 +27,17 @@ public class FileNameValidator {
         // Регулярное выражение для проверки допустимых символов
         String regex = "^[a-zA-Z0-9_]+$";
         if (!Pattern.matches(regex, nameWithoutExtension)) {
-            System.out.println("Имя файла может содержать только латиницу, цифры и символы нижнего подчеркивания.");
+            result.addMessage("Ошибка: Имя файла может содержать только латиницу, цифры и символы нижнего подчеркивания.");
             return false;
         }
 
         // Проверка на наличие двух подряд идущих символов нижнего подчеркивания
         if (fileName.contains("__")) {
-            System.out.println("Два символа нижнего подчеркивания подряд недопустимы.");
+            result.addMessage("Ошибка: Два символа нижнего подчеркивания подряд недопустимы.");
             return false;
         }
 
-        System.out.println("Имя архива корректное.");
+        result.addMessage("Проверка имени файла: ОК");
         return true;
     }
 }
