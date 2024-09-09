@@ -27,7 +27,7 @@ public class FbxFileValidator {
         // Проверка размера файла
         if (file.length() > MAX_SIZE_MB) {
             result.addMessage("Ошибка: размер файла превышает 500 MB.");
-            return false;
+            result.addSeparator();
         }
 
         //проверка расширения архива
@@ -38,7 +38,6 @@ public class FbxFileValidator {
 
         if(!fileNameValidator.validateFileName(file.getName(), result)) {
             result.addMessage("Ошибка: имя файла не соответствует требованиям.");
-            return false;
         }
         result.addMessage("Файл проверен успешно.");
         return true;
