@@ -1,16 +1,9 @@
-Ошибка: размер файла превышает 500 MB.
+Имя проекта Lyublinskaya_ZU_111_3
 
 
 -------------------------------------------------
 
 
-Имя проекта _123
-
-
--------------------------------------------------
-
-
-Ошибка: Два символа нижнего подчеркивания подряд недопустимы.
 Проверка имени файла: ОК
 Файл проверен успешно.
 
@@ -19,5 +12,49 @@
 
 
 Версия FBX: 7.4.0
-Имя модели: First_Object
-Имя модели: Second_Object
+Имя объекта SM_Lyublinskaya_ZU_111_3_Main: ОК
+Имя объекта SM_Lyublinskaya_ZU_111_3_MainGlass: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_001: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_002: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_003: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_004: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_005: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_006: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_007: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_008: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_009: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_010: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_011: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_012: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_013: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_014: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_015: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_016: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_017: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_018: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_019: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_020: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_021: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_022: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_023: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_024: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_025: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_026: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_027: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_028: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_029: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_030: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_031: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_032: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_033: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_034: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_035: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_036: ОК
+Имя объекта UCX_SM_Lyublinskaya_ZU_111_3_037: ОК
+Ошибка: Отсутствует объект UCX_SM_Lyublinskaya_ZU_111_3_038
+
+
+-------------------------------------------------
+
+
+Количество полигонов в сцене: 70543   OK
