@@ -22,7 +22,7 @@ public class FbxValidator {
 
         // Проверка ZIP файла
         if (validator.validateZipFile(zipFilePath, result)) {
-            System.out.println("ZIP файл проверен.");
+            System.out.println(("ZIP файл проверен."));
         }
 
         result.addSeparator();
@@ -49,7 +49,19 @@ public class FbxValidator {
         }
 
         result.addSeparator();
-        int polyCount = JsonFbxValidator.calculatePolygonCount(jsonFilePath);
+
+        JsonFbxValidator.validateMaterials(jsonFilePath, baseName, result);
+
+        //Проверка слоев
+//        try {
+//            JsonFbxValidator.checkLayers(jsonFilePath, result);
+//        } catch (IOException e) {
+//            result.addMessage("Ошибка при проверке слоев: " + e.getMessage());
+//        }
+
+        result.addSeparator();
+
+        int polyCount = JsonFbxValidator.calculatePolygonCountWithValidation(jsonFilePath);
         if (polyCount < 2000000) {
             result.addMessage("Количество полигонов в сцене: " + polyCount + "   OK");
         } else result.addMessage("Количество полигонов в сцене: " + polyCount + "Ошибка: количество полигонов не должно превышать 2 млн.");
