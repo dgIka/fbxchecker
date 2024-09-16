@@ -16,24 +16,47 @@ public class FbxValidator {
         String jsonFilePath = args[1];
         FbxFileValidator validator = new FbxFileValidator();
         ValidationResult result = new ValidationResult();
+        TextureValidator textureValidator = new TextureValidator();
 
         // Извлекаем базовое имя из пути к архиву
         String baseName = extractBaseName(zipFilePath);
+        result.addMessage("1. Имя проекта: " + baseName);  // 1.
+        result.addSeparator();
 
         // Проверка ZIP файла
-        if (validator.validateZipFile(zipFilePath, result)) {
-            System.out.println(("ZIP файл проверен."));
+        if (validator.validateZipFile(zipFilePath, result)) {  // 2.
+            System.out.println("ZIP файл проверен.");
         }
 
         result.addSeparator();
 
-        // Проверка JSON файл
+        // Разархивирование ZIP-файла
+        Path tempDir = null;
         try {
-            JsonFbxValidator.validateFbxVersion(jsonFilePath, result);
+            tempDir = validator.extractZipFile(zipFilePath);
+        } catch (IOException e) {
+            result.addMessage("Ошибка при разархивировании файла: " + e.getMessage());
+        }
+
+        if (tempDir == null) {
+            result.addMessage("Ошибка: Временная директория не создана.");
+            return;
+        }
+
+        result.addMessage("3. Список файлов. Проверка имен. \n");  // 3.
+
+        FileNameValidator.validateFileNames(validator.listFilesInZip(zipFilePath), baseName, result);
+
+        result.addSeparator();
+
+        // Проверка JSON файла
+        try {
+            JsonFbxValidator.validateFbxVersion(jsonFilePath, result);  // 4.
         } catch (IOException e) {
             result.addMessage("Ошибка при чтении JSON файла: " + e.getMessage());
         }
 
+        result.addMessage("5. Проверка имен объектов \n");  // 5.
         // Извлечение и проверка имен объектов
         try {
             List<String> modelNames = JsonFbxValidator.extractModelNames(jsonFilePath);
@@ -41,7 +64,6 @@ public class FbxValidator {
 
             // Выполняем проверки
             objectNameValidator.checkMainObject(modelNames, result);
-            objectNameValidator.checkMainGlassObject(modelNames, result);
             objectNameValidator.checkUcObjects(modelNames, result);
 
         } catch (IOException e) {
@@ -50,21 +72,33 @@ public class FbxValidator {
 
         result.addSeparator();
 
+        result.addMessage("6. Список материалов \n");  // 6.
+
         JsonFbxValidator.validateMaterials(jsonFilePath, baseName, result);
 
-        //Проверка слоев
-//        try {
-//            JsonFbxValidator.checkLayers(jsonFilePath, result);
-//        } catch (IOException e) {
-//            result.addMessage("Ошибка при проверке слоев: " + e.getMessage());
-//        }
-
         result.addSeparator();
+
+        result.addMessage("7. Polycount \n");  // 7.
 
         int polyCount = JsonFbxValidator.calculatePolygonCountWithValidation(jsonFilePath);
         if (polyCount < 2000000) {
             result.addMessage("Количество полигонов в сцене: " + polyCount + "   OK");
-        } else result.addMessage("Количество полигонов в сцене: " + polyCount + "Ошибка: количество полигонов не должно превышать 2 млн.");
+        } else {
+            result.addMessage("Количество полигонов в сцене: " + polyCount + " Ошибка: количество полигонов не должно превышать 2 млн.");
+        }
+
+        result.addSeparator();
+
+        // Проверка текстур
+        result.addMessage("8. Проверка текстур \n");  // 8.
+
+        try {
+            // Передаем временную директорию в метод extractTextureFiles
+            List<String> textureFiles = validator.extractTextureFiles(zipFilePath, tempDir);
+            textureValidator.validateTextures(textureFiles, result, textureValidator.getUdimResolutionMap());
+        } catch (IOException e) {
+            result.addMessage("Ошибка при извлечении текстур из архива: " + e.getMessage());
+        }
 
         // Сохранение результатов проверки в файл
         try {
@@ -73,6 +107,14 @@ public class FbxValidator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Удаление временной директории после всех проверок
+        try {
+            validator.deleteTempDirectory(tempDir);
+            System.out.println("Временные файлы удалены.");
+        } catch (IOException e) {
+            System.out.println("Ошибка при удалении временных файлов: " + e.getMessage());
+        }
     }
 
     // Метод для извлечения базового имени из пути к архиву или файлу FBX
@@ -80,7 +122,7 @@ public class FbxValidator {
         int start = filePath.indexOf("SM_");
         int end = filePath.lastIndexOf('.');
         if (start != -1 && end != -1) {
-            return filePath.substring(start + 3, end); // Извлекаем все после "SM_" и до расширения
+            return filePath.substring(start + 3, end);  // Извлекаем все после "SM_" и до расширения
         }
         return "";
     }

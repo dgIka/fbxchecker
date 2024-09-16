@@ -4,15 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 public class FbxFileValidator {
     //проверяем файлы на соответствие
     private static final long MAX_SIZE_MB = 500 * 1024 * 1024;
-    private FileNameValidator fileNameValidator;
 
     public FbxFileValidator() {
-        this.fileNameValidator = new FileNameValidator();
     }
 
     public boolean validateZipFile(String filepath, ValidationResult result) {
@@ -25,9 +25,13 @@ public class FbxFileValidator {
         }
 
         // Проверка размера файла
-        if (file.length() > MAX_SIZE_MB) {
-            result.addMessage("Ошибка: размер файла превышает 500 MB.");
+        double fileSizeInMB = file.length() / (1024.0 * 1024.0);
+
+        if (fileSizeInMB > 500) {
+            result.addMessage("2. Размер архива: " + String.format("%.2f", fileSizeInMB) + " MB. Ошибка: размер файла превышает 500 MB.");
             result.addSeparator();
+        } else {
+            result.addMessage("2. Размер архива: " + String.format("%.2f", fileSizeInMB) + " MB.");
         }
 
         //проверка расширения архива
@@ -36,11 +40,17 @@ public class FbxFileValidator {
             return false;
         }
 
-        if(!fileNameValidator.validateFileName(file.getName(), result)) {
-            result.addMessage("Ошибка: имя файла не соответствует требованиям.");
-        }
-        result.addMessage("Файл проверен успешно.");
+
         return true;
+    }
+
+    // Метод для извлечения списка всех файлов в архиве
+    public List<String> listFilesInZip(String zipFilePath) throws IOException {
+        List<String> fileList = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            zipFile.stream().forEach(entry -> fileList.add(entry.getName()));
+        }
+        return fileList;
     }
 
     public Path extractZipFile(String zipFilePath) throws IOException {
@@ -73,6 +83,19 @@ public class FbxFileValidator {
                 .sorted((a, b) -> b.compareTo(a)) // Сортируем для удаления вложенных файлов сначала
                 .map(Path::toFile)
                 .forEach(File::delete);
+    }
+
+    // метод для фильтрации текстур (.png файлы) и возврата полных путей
+    public List<String> extractTextureFiles(String zipFilePath, Path tempDir) throws IOException {
+        List<String> textureFiles = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(zipFilePath)) {
+            zipFile.stream().forEach(entry -> {
+                if (entry.getName().endsWith(".png")) {
+                    textureFiles.add(tempDir.resolve(entry.getName()).toString());  // полный путь к файлу
+                }
+            });
+        }
+        return textureFiles;
     }
 
 

@@ -20,7 +20,8 @@ public class JsonFbxValidator {
         // Проверка версии FBX
         int version = rootNode.get("version").asInt();
         String versionString = (version / 1000) + "." + (version / 100 % 10) + "." + (version % 10);
-        result.addMessage("Версия FBX: " + versionString);
+        result.addMessage("4. Версия FBX: " + versionString);
+        result.addSeparator();
     }
 
     // Статический метод для извлечения имен объектов моделей
@@ -190,7 +191,7 @@ public class JsonFbxValidator {
         while (true) {
             String expectedMaterialName = materialBaseName + index;
             if (foundMaterialNames.contains(expectedMaterialName)) {
-                result.addMessage("Материал " + expectedMaterialName + " (Индекс: " + index + ") ОК");
+                result.addMessage(expectedMaterialName + " ОК");
             } else {
                 break;  // Если материал не найден, прекращаем проверку
             }

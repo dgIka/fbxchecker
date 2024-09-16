@@ -1,39 +1,145 @@
-Имя проекта Kronshtadtskij_Bulvar_Ground
+1. Имя проекта: 
 
 
 -------------------------------------------------
 
 
-Проверка имени файла: ОК
-Файл проверен успешно.
+2. Размер архива: 186,56 MB.
 
 
 -------------------------------------------------
 
 
-Версия FBX: 7.4.0
-Ошибка: Отсутствует объект SM_Kronshtadtskij_Bulvar_Ground_Main
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_001: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_002: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_003: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_004: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_005: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_006: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_007: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_008: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_009: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_010: ОК
-Имя объекта UCX_SM_Kronshtadtskij_Bulvar_Ground_011: ОК
-Ошибка: Отсутствует объект UCX_SM_Kronshtadtskij_Bulvar_Ground_012
+3. Список файлов. Проверка имен. 
+
+T_3_Vladimirskaya_23_Ground_Normal_1.1047.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1001.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1002.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1003.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1004.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1005.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1006.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1007.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1008.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1009.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1010.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1011.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1012.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1013.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1014.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1015.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1016.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1017.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1018.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1019.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1020.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1021.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1022.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1023.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1024.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1025.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1026.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1027.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1028.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1029.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1030.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1031.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1032.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1033.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1034.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1035.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1036.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1038.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1039.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1040.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1041.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1042.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1043.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1044.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1045.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1046.png: ОК
+T_3_Vladimirskaya_23_Ground_Normal_1.1037.png: ОК
 
 
 -------------------------------------------------
 
 
-Материал M_Kronshtadtskij_Bulvar_Ground_1 (Индекс: 1) ОК
+4. Версия FBX: 7.4.0
 
 
 -------------------------------------------------
 
+
+5. Проверка имен объектов 
+
+Ошибка: Отсутствует объект SM__Main
+Ошибка: Отсутствует объект SM__MainGlass
+
+
+-------------------------------------------------
+
+
+6. Список материалов 
+
+
+
+-------------------------------------------------
+
+
+7. Polycount 
 
 Количество полигонов в сцене: 494286   OK
+
+
+-------------------------------------------------
+
+
+8. Проверка текстур 
+
+T_3_Vladimirskaya_23_Ground_Normal_1.1047.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1001.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1002.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1003.png      Размер: 2048 x 2048      Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1004.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1005.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1006.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1007.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1008.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1009.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1010.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1011.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1012.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1013.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1014.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1015.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1016.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1017.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1018.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1019.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1020.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1021.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1022.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1023.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1024.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1025.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1026.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1027.png      Размер: 2048 x 2048      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1028.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1029.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1030.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1031.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1032.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1033.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1034.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1035.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1036.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1038.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1039.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : OK          
+T_3_Vladimirskaya_23_Ground_Normal_1.1040.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1041.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1042.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1043.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1044.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1045.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1046.png      Размер: 256 x 256        Альфа-канал: отсутствует     8 bit : Ошибка      
+T_3_Vladimirskaya_23_Ground_Normal_1.1037.png      Размер: 4096 x 4096      Альфа-канал: отсутствует     8 bit : Ошибка      

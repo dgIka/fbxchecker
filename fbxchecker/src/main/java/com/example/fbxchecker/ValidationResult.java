@@ -25,8 +25,8 @@ public class ValidationResult {
     }
 
     public void addSeparator() {
-        messages.add("\n");
+        messages.add("\r\n");
         messages.add("-------------------------------------------------");
-        messages.add("\n");
+        messages.add("\r\n");
     }
 }
