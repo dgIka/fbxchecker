@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 public class FbxValidator {
     public static void main(String[] args) throws IOException {
@@ -99,6 +100,57 @@ public class FbxValidator {
         } catch (IOException e) {
             result.addMessage("Ошибка при извлечении текстур из архива: " + e.getMessage());
         }
+
+        result.addSeparator();
+
+        List<double[]> vertices = null;
+
+        List<int[]> triangleIndices = null;
+
+        List<double[]> uvCoords = null;
+
+        List<int[]> uvIndices = null;
+
+        try {
+            // Указываем имя UV-канала, который хотите использовать
+            String uvChannelName = "UVChannel_1";  // Замените на имя вашего UV-канала
+
+            // Извлекаем вершины
+            vertices = JsonFbxValidator.extractVertices(jsonFilePath);
+
+            // Извлекаем индексы треугольников
+            triangleIndices = JsonFbxValidator.extractPolygonVertexIndices(jsonFilePath);
+
+            // Извлекаем UV координаты
+            uvCoords = JsonFbxValidator.extractUVCoords(jsonFilePath, uvChannelName);
+
+            // Извлекаем UV индексы
+            uvIndices = JsonFbxValidator.extractUVIndices(jsonFilePath, uvChannelName);
+
+
+
+            // Для проверки можно вывести размеры списков
+            System.out.println("Количество вершин: " + vertices.size());
+            System.out.println("Количество треугольников: " + triangleIndices.size());
+            System.out.println("Количество UV координат: " + uvCoords.size());
+            System.out.println("Количество UV индексов: " + uvIndices.size());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Создаём экземпляр TexelDensityCalculator
+        TexelDensityCalculator texelDensityCalculator = new TexelDensityCalculator(
+                vertices,
+                triangleIndices,
+                uvCoords,
+                uvIndices,
+                textureValidator.getUdimResolutionMap()
+        );
+
+        // Вычисляем Texel Density и добавляем результаты в ValidationResult
+        texelDensityCalculator.calculateTexelDensity(result);
+
 
         // Сохранение результатов проверки в файл
         try {
