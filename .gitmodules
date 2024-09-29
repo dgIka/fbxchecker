@@ -1,0 +1,4 @@
+[submodule "fbxchecker/libs/fbx_parse"]
+	path = fbxchecker/libs/fbx_parse
+	url = https://github.com/howieter/fbx_parse
+	branch = dllbranch
