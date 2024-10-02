@@ -20,7 +20,7 @@ public class FbxFileValidator {
 
         //проверка существования файла
         if(!file.exists()) {
-            System.out.println("Файл не найден: " + filepath);
+            System.out.println("File not found: " + filepath);
             return false;
         }
 

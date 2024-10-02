@@ -111,12 +111,17 @@ public class JsonFbxValidator {
         return geometryIdNodeMap;
     }
 
-    // Обновленный метод для извлечения вершин
-    public static List<double[]> extractVertices(String jsonFilePath) throws IOException {
+    // метод для извлечения вершин
+    public static List<double[]> extractVertices(String jsonFilePath, Set<Long> ucxGeometryIds) throws IOException {
         Map<Long, JsonNode> geometryIdNodeMap = getGeometryIdNodeMap(jsonFilePath);
         List<double[]> vertices = new ArrayList<>();
 
-        for (JsonNode geometryNode : geometryIdNodeMap.values()) {
+        for (Map.Entry<Long, JsonNode> entry : geometryIdNodeMap.entrySet()) {
+            Long geometryId = entry.getKey();
+            if (ucxGeometryIds.contains(geometryId)) {
+                continue;  // Skip UCX geometries
+            }
+            JsonNode geometryNode = entry.getValue();
             List<double[]> modelVertices = extractVerticesFromGeometry(geometryNode);
             vertices.addAll(modelVertices);
         }
@@ -124,13 +129,18 @@ public class JsonFbxValidator {
         return vertices;
     }
 
-    // Обновленный метод для извлечения индексов полигонов
-    public static List<int[]> extractPolygonVertexIndices(String jsonFilePath) throws IOException {
+    // метод для извлечения индексов полигонов
+    public static List<int[]> extractPolygonVertexIndices(String jsonFilePath, Set<Long> ucxGeometryIds) throws IOException {
         Map<Long, JsonNode> geometryIdNodeMap = getGeometryIdNodeMap(jsonFilePath);
         List<int[]> triangleIndices = new ArrayList<>();
         int vertexOffset = 0;
 
-        for (JsonNode geometryNode : geometryIdNodeMap.values()) {
+        for (Map.Entry<Long, JsonNode> entry : geometryIdNodeMap.entrySet()) {
+            Long geometryId = entry.getKey();
+            if (ucxGeometryIds.contains(geometryId)) {
+                continue;  // Skip UCX geometries
+            }
+            JsonNode geometryNode = entry.getValue();
             List<double[]> modelVertices = extractVerticesFromGeometry(geometryNode);
             List<int[]> modelTriangleIndices = extractPolygonVertexIndicesFromGeometry(geometryNode, vertexOffset);
             triangleIndices.addAll(modelTriangleIndices);
@@ -140,12 +150,17 @@ public class JsonFbxValidator {
         return triangleIndices;
     }
 
-    // Обновленный метод для извлечения UV координат
-    public static List<double[]> extractUVCoords(String jsonFilePath, String uvChannelName) throws IOException {
+    // метод для извлечения UV координат
+    public static List<double[]> extractUVCoords(String jsonFilePath, Set<Long> ucxGeometryIds, String uvChannelName) throws IOException {
         Map<Long, JsonNode> geometryIdNodeMap = getGeometryIdNodeMap(jsonFilePath);
         List<double[]> uvCoords = new ArrayList<>();
 
-        for (JsonNode geometryNode : geometryIdNodeMap.values()) {
+        for (Map.Entry<Long, JsonNode> entry : geometryIdNodeMap.entrySet()) {
+            Long geometryId = entry.getKey();
+            if (ucxGeometryIds.contains(geometryId)) {
+                continue;  // Skip UCX geometries
+            }
+            JsonNode geometryNode = entry.getValue();
             List<double[]> modelUVCoords = extractUVCoordsFromGeometry(geometryNode, uvChannelName);
             uvCoords.addAll(modelUVCoords);
         }
@@ -153,13 +168,18 @@ public class JsonFbxValidator {
         return uvCoords;
     }
 
-    // Обновленный метод для извлечения индексов UV
-    public static List<int[]> extractUVIndices(String jsonFilePath, String uvChannelName) throws IOException {
+    // метод для извлечения индексов UV
+    public static List<int[]> extractUVIndices(String jsonFilePath, Set<Long> ucxGeometryIds, String uvChannelName) throws IOException {
         Map<Long, JsonNode> geometryIdNodeMap = getGeometryIdNodeMap(jsonFilePath);
         List<int[]> uvIndices = new ArrayList<>();
         int uvOffset = 0;
 
-        for (JsonNode geometryNode : geometryIdNodeMap.values()) {
+        for (Map.Entry<Long, JsonNode> entry : geometryIdNodeMap.entrySet()) {
+            Long geometryId = entry.getKey();
+            if (ucxGeometryIds.contains(geometryId)) {
+                continue;  // Skip UCX geometries
+            }
+            JsonNode geometryNode = entry.getValue();
             List<double[]> modelUVCoords = extractUVCoordsFromGeometry(geometryNode, uvChannelName);
             List<int[]> modelUVIndices = extractUVIndicesFromGeometry(geometryNode, uvOffset, uvChannelName);
             uvIndices.addAll(modelUVIndices);
@@ -207,9 +227,11 @@ public class JsonFbxValidator {
                         // Обработка индексов для извлечения треугольников
                         List<Integer> faceIndices = new ArrayList<>();
                         for (int indexValue : indices) {
-                            int correctedIndex = (indexValue < 0) ? -indexValue - 1 : indexValue;
-                            faceIndices.add(correctedIndex + vertexOffset);
-                            if (indexValue < 0) {
+                            boolean isLastIndex = indexValue < 0;
+                            int correctedIndex = isLastIndex ? -indexValue - 1 : indexValue;
+                            correctedIndex += vertexOffset;  // Применяем смещение
+                            faceIndices.add(correctedIndex);
+                            if (isLastIndex) {
                                 // Конец полигона
                                 if (faceIndices.size() == 3) {
                                     triangleIndices.add(new int[]{
@@ -257,6 +279,8 @@ public class JsonFbxValidator {
                     }
                 }
             }
+        } else {
+            System.err.println("UV coordinates not found for geometry.");
         }
         return uvCoords;
     }
@@ -266,46 +290,126 @@ public class JsonFbxValidator {
         List<int[]> uvIndices = new ArrayList<>();
         JsonNode layerElementUVNode = findLayerElementUVByName(geometryNode, uvChannelName);
         if (layerElementUVNode != null) {
-            JsonNode uvIndexNode = findNodeByName(layerElementUVNode, "UVIndex");
-            if (uvIndexNode != null && uvIndexNode.has("properties")) {
-                for (JsonNode property : uvIndexNode.get("properties")) {
-                    if (property.get("type").asText().equals("i")) {
-                        JsonNode valueNode = property.get("value");
-                        if (valueNode.isArray()) {
-                            List<Integer> indices = new ArrayList<>();
-                            for (JsonNode indexNode : valueNode) {
-                                indices.add(indexNode.asInt() + uvOffset);
-                            }
-                            // Группируем индексы по треугольникам
-                            List<Integer> faceIndices = new ArrayList<>();
-                            for (int index : indices) {
-                                faceIndices.add(index);
-                                if (faceIndices.size() == 3) {
-                                    uvIndices.add(new int[]{
-                                            faceIndices.get(0),
-                                            faceIndices.get(1),
-                                            faceIndices.get(2)
-                                    });
-                                    faceIndices.clear();
+            // Проверяем ReferenceInformationType
+            JsonNode referenceInformationTypeNode = findNodeByName(layerElementUVNode, "ReferenceInformationType");
+            String referenceInformationType = null;
+            if (referenceInformationTypeNode != null && referenceInformationTypeNode.has("properties")) {
+                referenceInformationType = referenceInformationTypeNode.get("properties").get(0).get("value").asText();
+            }
+
+            if ("IndexToDirect".equals(referenceInformationType)) {
+                // Используем UVIndex
+                JsonNode uvIndexNode = findNodeByName(layerElementUVNode, "UVIndex");
+                if (uvIndexNode != null && uvIndexNode.has("properties")) {
+                    for (JsonNode property : uvIndexNode.get("properties")) {
+                        if (property.get("type").asText().equals("i")) {
+                            JsonNode valueNode = property.get("value");
+                            if (valueNode.isArray()) {
+                                List<Integer> indices = new ArrayList<>();
+                                for (JsonNode indexNode : valueNode) {
+                                    indices.add(indexNode.asInt());
+                                }
+                                // Обработка индексов
+                                List<Integer> faceIndices = new ArrayList<>();
+                                for (int index : indices) {
+                                    faceIndices.add(index + uvOffset);
+                                    if (faceIndices.size() == 3) {
+                                        uvIndices.add(new int[]{
+                                                faceIndices.get(0),
+                                                faceIndices.get(1),
+                                                faceIndices.get(2)
+                                        });
+                                        faceIndices.clear();
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    System.err.println("UVIndex not found for geometry.");
                 }
+            } else if ("Direct".equals(referenceInformationType)) {
+                // Используем PolygonVertexIndex
+                JsonNode polygonVertexIndexNode = findNodeByName(geometryNode, "PolygonVertexIndex");
+                if (polygonVertexIndexNode != null && polygonVertexIndexNode.has("properties")) {
+                    for (JsonNode property : polygonVertexIndexNode.get("properties")) {
+                        if (property.get("type").asText().equals("i")) {
+                            JsonNode valueNode = property.get("value");
+                            if (valueNode.isArray()) {
+                                List<Integer> indices = new ArrayList<>();
+                                for (JsonNode indexNode : valueNode) {
+                                    indices.add(indexNode.asInt());
+                                }
+                                // Обработка индексов
+                                List<Integer> faceIndices = new ArrayList<>();
+                                for (int indexValue : indices) {
+                                    int correctedIndex = (indexValue < 0) ? -indexValue - 1 : indexValue;
+                                    faceIndices.add(correctedIndex + uvOffset);
+                                    if (indexValue < 0) {
+                                        // Конец полигона
+                                        if (faceIndices.size() == 3) {
+                                            uvIndices.add(new int[]{
+                                                    faceIndices.get(0),
+                                                    faceIndices.get(1),
+                                                    faceIndices.get(2)
+                                            });
+                                        } else if (faceIndices.size() > 3) {
+                                            // Триангуляция многоугольника
+                                            for (int j = 1; j < faceIndices.size() - 1; j++) {
+                                                uvIndices.add(new int[]{
+                                                        faceIndices.get(0),
+                                                        faceIndices.get(j),
+                                                        faceIndices.get(j + 1)
+                                                });
+                                            }
+                                        }
+                                        faceIndices.clear();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    System.err.println("PolygonVertexIndex not found for geometry.");
+                }
+            } else {
+                System.err.println("Unsupported ReferenceInformationType: " + referenceInformationType);
             }
+        } else {
+            System.err.println("LayerElementUV not found for geometry.");
         }
         return uvIndices;
     }
 
     // Метод для поиска LayerElementUV по имени UV-канала
-    private static JsonNode findLayerElementUVByName(JsonNode geometryNode, String uvChannelName) {
-        List<JsonNode> layerElementUVNodes = findNodesByName(geometryNode, "LayerElementUV");
-        for (JsonNode layerElementUVNode : layerElementUVNodes) {
-            String name = getLayerElementUVName(layerElementUVNode);
-            if (uvChannelName.equals(name)) {
-                return layerElementUVNode;
+    public static JsonNode findLayerElementUVByName(JsonNode geometryNode, String uvChannelName) {
+        JsonNode layerElementUVArrayNode = findNodeByName(geometryNode, "LayerElementUV");
+        if (layerElementUVArrayNode != null) {
+            if (layerElementUVArrayNode.isArray()) {
+                for (JsonNode layerElementUVNode : layerElementUVArrayNode) {
+                    JsonNode nameNode = findNodeByName(layerElementUVNode, "Name");
+                    String name = "";
+                    if (nameNode != null && nameNode.has("properties")) {
+                        name = nameNode.get("properties").get(0).get("value").asText();
+                    }
+                    if (uvChannelName == null || uvChannelName.isEmpty() || uvChannelName.equals(name)) {
+                        return layerElementUVNode;
+                    }
+                }
+                System.err.println("UV Channel not found: " + uvChannelName);
+            } else if (layerElementUVArrayNode.isObject()) {
+                // Если LayerElementUV представлен как объект (единственный UV-канал)
+                JsonNode nameNode = findNodeByName(layerElementUVArrayNode, "Name");
+                String name = "";
+                if (nameNode != null && nameNode.has("properties")) {
+                    name = nameNode.get("properties").get(0).get("value").asText();
+                }
+                if (uvChannelName == null || uvChannelName.isEmpty() || uvChannelName.equals(name)) {
+                    return layerElementUVArrayNode;
+                }
             }
         }
+        System.err.println("LayerElementUV not found in geometry.");
         return null;
     }
 
@@ -470,8 +574,143 @@ public class JsonFbxValidator {
             }
         }
 
-        System.out.println("Использовано вершин: " + usedVertices.size());
+        System.out.println("Verticed used: " + usedVertices.size());
         return polygonCount;  // Возвращаем количество треугольников
+    }
+
+    //Метод для поиска блока Connections
+    public static Map<Long, Long> getModelToGeometryMap(String jsonFilePath) throws IOException {
+        Map<Long, Long> modelToGeometryMap = new HashMap<>();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
+
+        JsonNode connectionsNode = findNodeByName(rootNode, "Connections");
+        if (connectionsNode != null && connectionsNode.has("children")) {
+            for (JsonNode connectionNode : connectionsNode.get("children")) {
+                if (connectionNode.get("name").asText().equals("C")) {
+                    JsonNode properties = connectionNode.get("properties");
+                    if (properties != null && properties.isArray()) {
+                        String connectionType = properties.get(0).get("value").asText();
+                        if (connectionType.equals("OO")) {
+                            Long childId = properties.get(1).get("value").asLong();
+                            Long parentId = properties.get(2).get("value").asLong();
+
+                            // Проверяем, является ли childId геометрией, а parentId моделью
+                            // Для этого нужно свериться с Objects
+                            // Допустим, у нас есть методы для проверки типов по идентификаторам
+                            if (isGeometryId(childId, rootNode) && isModelId(parentId, rootNode)) {
+                                modelToGeometryMap.put(parentId, childId);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return modelToGeometryMap;
+    }
+
+    //Проверка является ли идентификатор геометрией или моделью
+    private static boolean isGeometryId(Long id, JsonNode rootNode) {
+        JsonNode objectsNode = findNodeByName(rootNode, "Objects");
+        if (objectsNode != null && objectsNode.has("children")) {
+            for (JsonNode objectNode : objectsNode.get("children")) {
+                if (objectNode.get("name").asText().equals("Geometry")) {
+                    JsonNode properties = objectNode.get("properties");
+                    if (properties != null && properties.isArray()) {
+                        Long geometryId = null;
+                        for (JsonNode property : properties) {
+                            if (property.get("type").asText().equals("L")) {
+                                geometryId = property.get("value").asLong();
+                                break;
+                            }
+                        }
+                        if (geometryId != null && geometryId.equals(id)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isModelId(Long id, JsonNode rootNode) {
+        JsonNode objectsNode = findNodeByName(rootNode, "Objects");
+        if (objectsNode != null && objectsNode.has("children")) {
+            for (JsonNode objectNode : objectsNode.get("children")) {
+                if (objectNode.get("name").asText().equals("Model")) {
+                    JsonNode properties = objectNode.get("properties");
+                    if (properties != null && properties.isArray()) {
+                        Long modelId = null;
+                        for (JsonNode property : properties) {
+                            if (property.get("type").asText().equals("L")) {
+                                modelId = property.get("value").asLong();
+                                break;
+                            }
+                        }
+                        if (modelId != null && modelId.equals(id)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // получение идентификаторов моделей UCX
+    public static Set<Long> getUCXModelIds(String jsonFilePath) throws IOException {
+        Set<Long> ucxModelIds = new HashSet<>();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
+
+        JsonNode objectsNode = findNodeByName(rootNode, "Objects");
+        if (objectsNode != null && objectsNode.has("children")) {
+            for (JsonNode objectNode : objectsNode.get("children")) {
+                if (objectNode.get("name").asText().equals("Model")) {
+                    JsonNode properties = objectNode.get("properties");
+                    if (properties != null && properties.isArray()) {
+                        Long modelId = null;
+                        String modelName = null;
+                        for (JsonNode property : properties) {
+                            String type = property.get("type").asText();
+                            if (type.equals("L") && modelId == null) {
+                                modelId = property.get("value").asLong();
+                            } else if (type.equals("S") && modelName == null) {
+                                modelName = property.get("value").asText().split("\u0000")[0];
+                            }
+                            if (modelId != null && modelName != null) {
+                                break;
+                            }
+                        }
+                        if (modelId != null && modelName != null && modelName.startsWith("UCX")) {
+                            ucxModelIds.add(modelId);
+                        }
+                    }
+                }
+            }
+        }
+
+        return ucxModelIds;
+    }
+
+    // Получение идентификаторов геометрий, связанных с UCX-моделями:
+    public static Set<Long> getUCXGeometryIds(String jsonFilePath) throws IOException {
+        Set<Long> ucxGeometryIds = new HashSet<>();
+        Set<Long> ucxModelIds = getUCXModelIds(jsonFilePath);
+        Map<Long, Long> modelToGeometryMap = getModelToGeometryMap(jsonFilePath);
+
+        for (Long modelId : ucxModelIds) {
+            Long geometryId = modelToGeometryMap.get(modelId);
+            if (geometryId != null) {
+                ucxGeometryIds.add(geometryId);
+            }
+        }
+
+        return ucxGeometryIds;
     }
 
     // Вспомогательный метод для поиска узла по имени
@@ -520,4 +759,5 @@ public class JsonFbxValidator {
         }
         return null;
     }
+
 }

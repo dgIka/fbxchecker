@@ -26,7 +26,7 @@ public class FbxValidator {
 
         // Проверка ZIP файла
         if (validator.validateZipFile(zipFilePath, result)) {  // 2.
-            System.out.println("ZIP файл проверен.");
+            System.out.println("ZIP check successful.");
         }
 
         result.addSeparator();
@@ -111,29 +111,24 @@ public class FbxValidator {
 
         List<int[]> uvIndices = null;
 
+        Set<Long> ucxGeometryIds = JsonFbxValidator.getUCXGeometryIds(jsonFilePath);
+
         try {
-            // Указываем имя UV-канала, который хотите использовать
-            String uvChannelName = "UVChannel_1";  // Замените на имя вашего UV-канала
+            // Указываем имя UV-канала
+            String uvChannelName = null;
 
-            // Извлекаем вершины
-            vertices = JsonFbxValidator.extractVertices(jsonFilePath);
-
-            // Извлекаем индексы треугольников
-            triangleIndices = JsonFbxValidator.extractPolygonVertexIndices(jsonFilePath);
-
-            // Извлекаем UV координаты
-            uvCoords = JsonFbxValidator.extractUVCoords(jsonFilePath, uvChannelName);
-
-            // Извлекаем UV индексы
-            uvIndices = JsonFbxValidator.extractUVIndices(jsonFilePath, uvChannelName);
+            vertices = JsonFbxValidator.extractVertices(jsonFilePath, ucxGeometryIds);
+            triangleIndices = JsonFbxValidator.extractPolygonVertexIndices(jsonFilePath, ucxGeometryIds);
+            uvCoords = JsonFbxValidator.extractUVCoords(jsonFilePath, ucxGeometryIds, uvChannelName);
+            uvIndices = JsonFbxValidator.extractUVIndices(jsonFilePath, ucxGeometryIds, uvChannelName);
 
 
 
             // Для проверки можно вывести размеры списков
-            System.out.println("Количество вершин: " + vertices.size());
-            System.out.println("Количество треугольников: " + triangleIndices.size());
-            System.out.println("Количество UV координат: " + uvCoords.size());
-            System.out.println("Количество UV индексов: " + uvIndices.size());
+            System.out.println("Number of vetices: " + vertices.size());
+            System.out.println("Number of triangles: " + triangleIndices.size());
+            System.out.println("Number of UV Coords: " + uvCoords.size());
+            System.out.println("Number of UV Indices: " + uvIndices.size());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -152,10 +147,13 @@ public class FbxValidator {
         texelDensityCalculator.calculateTexelDensity(result);
 
 
+
+
+
         // Сохранение результатов проверки в файл
         try {
             Files.writeString(Path.of("validation_report.txt"), result.generateReport());
-            System.out.println("Результаты проверки сохранены в файл: validation_report.txt");
+            System.out.println("Check results saved: validation_report.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -163,7 +161,7 @@ public class FbxValidator {
         // Удаление временной директории после всех проверок
         try {
             validator.deleteTempDirectory(tempDir);
-            System.out.println("Временные файлы удалены.");
+            System.out.println("Temp files deleted.");
         } catch (IOException e) {
             System.out.println("Ошибка при удалении временных файлов: " + e.getMessage());
         }

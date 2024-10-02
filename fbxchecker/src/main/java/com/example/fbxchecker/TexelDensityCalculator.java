@@ -1,6 +1,5 @@
 package com.example.fbxchecker;
 
-import java.io.IOException;
 import java.util.*;
 
 public class TexelDensityCalculator {
@@ -10,6 +9,9 @@ public class TexelDensityCalculator {
     private List<double[]> uvCoords;
     private List<int[]> uvIndices;
     private Map<Integer, Integer> udimResolutionMap;
+
+    // Добавляем константу EPSILON для учёта погрешности
+    private static final double EPSILON = 0.0001;
 
     public TexelDensityCalculator(List<double[]> vertices, List<int[]> triangleIndices,
                                   List<double[]> uvCoords, List<int[]> uvIndices,
@@ -43,10 +45,16 @@ public class TexelDensityCalculator {
             // Вычисляем UDIM для треугольника
             int udim = calculateUdim(uvA, uvB, uvC);
 
-            // Проверяем, есть ли информация о разрешении текстуры для этого UDIM
+            // Получаем разрешение текстуры для этого UDIM
             int textureResolution = udimResolutionMap.getOrDefault(udim, 0);
-            if (textureResolution == 0) {
-                // Если разрешение текстуры не найдено или это заглушка, пропускаем
+
+            // Собираем данные по UDIM
+            UdimData udimData = udimDataMap.getOrDefault(udim, new UdimData(udim, textureResolution));
+            udimData.addTriangle();  // Увеличиваем общее количество полигонов
+            udimDataMap.put(udim, udimData);
+
+            if (textureResolution == 0 || textureResolution == 256) {
+                // Если разрешение текстуры не найдено или это заглушка, не вычисляем Texel Density
                 continue;
             }
 
@@ -56,31 +64,41 @@ public class TexelDensityCalculator {
             // Вычисляем площадь треугольника в UV-пространстве
             double uvArea = calculateTriangleArea2D(uvA, uvB, uvC);
 
+            // Проверяем, чтобы площади были положительными и ненулевыми
+            if (worldArea <= EPSILON || uvArea <= EPSILON) {
+                continue;  // Пропускаем некорректные треугольники
+            }
+
             // Вычисляем texel density для треугольника
             double texelDensity = Math.sqrt(uvArea) * textureResolution / Math.sqrt(worldArea);
 
-            // Собираем данные по UDIM
-            UdimData udimData = udimDataMap.getOrDefault(udim, new UdimData(udim, textureResolution));
+            // Добавляем Texel Density в данные UDIM
             udimData.addTexelDensity(texelDensity);
-            udimData.addTriangle(texelDensity);
-            udimDataMap.put(udim, udimData);
+            udimData.addTriangleWithTexelDensity(texelDensity);
         }
 
         // Выводим результаты
         result.addSeparator();
         result.addMessage("9. Texel Density по UDIM:");
         for (UdimData udimData : udimDataMap.values()) {
-            if (udimResolutionMap.get(udimData.udim) == 256) {
-                // Пропускаем UDIM с заглушкой
+            int textureResolution = udimResolutionMap.getOrDefault(udimData.udim, 0);
+            int totalTriangles = udimData.getTotalTriangles();
+
+            if (textureResolution == 0 || textureResolution == 256) {
+                // UDIM с заглушкой
+                result.addMessage("UDIM: " + udimData.udim +
+                        ", Заглушка, Всего полигонов: " + totalTriangles);
                 continue;
             }
+
             double averageTexelDensity = udimData.getAverageTexelDensity();
-            int errorTriangles = udimData.getTrianglesOutOfRange(512, 1706);
+            int errorTriangles = udimData.getTrianglesOutOfRange(512.0, 1706.0);
 
             String status = (errorTriangles == 0) ? "ОК" : "Ошибка";
             result.addMessage("UDIM: " + udimData.udim +
                     ", Средний Texel Density: " + String.format("%.2f", averageTexelDensity) +
-                    ", " + status + ", Полигонов вне диапазона: " + errorTriangles);
+                    ", " + status + ", Полигонов вне диапазона: " + errorTriangles +
+                    ", Всего полигонов: " + totalTriangles);
         }
     }
 
@@ -131,25 +149,42 @@ public class TexelDensityCalculator {
         int textureResolution;
         List<Double> texelDensities;
         int trianglesOutOfRange;
+        int totalTriangles;
+        int trianglesWithTexelDensity;
 
         public UdimData(int udim, int textureResolution) {
             this.udim = udim;
             this.textureResolution = textureResolution;
             this.texelDensities = new ArrayList<>();
             this.trianglesOutOfRange = 0;
+            this.totalTriangles = 0;
+            this.trianglesWithTexelDensity = 0;
+        }
+
+        public void addTriangle() {
+            totalTriangles++;
         }
 
         public void addTexelDensity(double texelDensity) {
             texelDensities.add(texelDensity);
         }
 
-        public void addTriangle(double texelDensity) {
-            if (texelDensity < 512 || texelDensity > 1706) {
+        public void addTriangleWithTexelDensity(double texelDensity) {
+            trianglesWithTexelDensity++;
+            // Округляем texelDensity перед сравнением
+            double roundedTexelDensity = Math.round(texelDensity * 100.0) / 100.0;
+
+            if (roundedTexelDensity < 512.0 - EPSILON || roundedTexelDensity > 1706.0 + EPSILON) {
                 trianglesOutOfRange++;
+                // Для отладки выводим значение, которое вне диапазона
+                System.out.println("UDIM " + udim + ": Triangle's texel density " + roundedTexelDensity + " out of range.");
             }
         }
 
         public double getAverageTexelDensity() {
+            if (texelDensities.isEmpty()) {
+                return 0.0;
+            }
             double sum = 0;
             for (double td : texelDensities) {
                 sum += td;
@@ -157,8 +192,12 @@ public class TexelDensityCalculator {
             return sum / texelDensities.size();
         }
 
-        public int getTrianglesOutOfRange(int min, int max) {
+        public int getTrianglesOutOfRange(double min, double max) {
             return trianglesOutOfRange;
+        }
+
+        public int getTotalTriangles() {
+            return totalTriangles;
         }
     }
 }
