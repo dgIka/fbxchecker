@@ -13,8 +13,12 @@ public class FbxValidator {
             return;
         }
 
+        NativeJavaCpp fbxParser = new NativeJavaCpp();
+        String jsonPath         = fbxParser.fbxParseJson(args[1]);
+        System.out.println(jsonPath);
+
         String zipFilePath = args[0];
-        String jsonFilePath = args[1];
+        String jsonFilePath = jsonPath;
         FbxFileValidator validator = new FbxFileValidator();
         ValidationResult result = new ValidationResult();
         TextureValidator textureValidator = new TextureValidator();
