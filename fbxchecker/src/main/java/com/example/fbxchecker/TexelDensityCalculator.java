@@ -13,6 +13,10 @@ public class TexelDensityCalculator {
     // Добавляем константу EPSILON для учёта погрешности
     private static final double EPSILON = 0.0001;
 
+    // Новые константы для минимального и максимального допустимых значений Texel Density
+    private static final double MIN_TEXEL_DENSITY = 512.0 * 0.9999;  // 511.9488
+    private static final double MAX_TEXEL_DENSITY = 1706.0 * 1.0001; // 1706.1706
+
     public TexelDensityCalculator(List<double[]> vertices, List<int[]> triangleIndices,
                                   List<double[]> uvCoords, List<int[]> uvIndices,
                                   Map<Integer, Integer> udimResolutionMap) {
@@ -92,7 +96,7 @@ public class TexelDensityCalculator {
             }
 
             double averageTexelDensity = udimData.getAverageTexelDensity();
-            int errorTriangles = udimData.getTrianglesOutOfRange(512.0, 1706.0);
+            int errorTriangles = udimData.getTrianglesOutOfRange();
 
             String status = (errorTriangles == 0) ? "ОК" : "Ошибка";
             result.addMessage("UDIM: " + udimData.udim +
@@ -171,13 +175,12 @@ public class TexelDensityCalculator {
 
         public void addTriangleWithTexelDensity(double texelDensity) {
             trianglesWithTexelDensity++;
-            // Округляем texelDensity перед сравнением
-            double roundedTexelDensity = Math.round(texelDensity * 100.0) / 100.0;
 
-            if (roundedTexelDensity < 512.0 - EPSILON || roundedTexelDensity > 1706.0 + EPSILON) {
+            // Проверяем texel density без округления
+            if (texelDensity < MIN_TEXEL_DENSITY || texelDensity > MAX_TEXEL_DENSITY) {
                 trianglesOutOfRange++;
                 // Для отладки выводим значение, которое вне диапазона
-                System.out.println("UDIM " + udim + ": Triangle's texel density " + roundedTexelDensity + " out of range.");
+                System.out.println("UDIM " + udim + ": Triangle's texel density " + texelDensity + " out of range.");
             }
         }
 
@@ -192,7 +195,7 @@ public class TexelDensityCalculator {
             return sum / texelDensities.size();
         }
 
-        public int getTrianglesOutOfRange(double min, double max) {
+        public int getTrianglesOutOfRange() {
             return trianglesOutOfRange;
         }
 
