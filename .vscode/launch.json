@@ -17,7 +17,6 @@
             "mainClass": "com.example.fbxchecker.FbxValidator",
             "projectName": "fbxchecker",
             "args": ["/project/fbxchecker/fbxchecker/test_files/SM_Kronshtadtskij_Bulvar_Ground.zip", "/project/fbxchecker/fbxchecker/test_files/SM_Kronshtadtskij_Bulvar_Ground.fbx"],
-            "vmArgs": "-Djava.library.path=/project/fbxchecker/fbxchecker/src/main/java/com/example/fbxchecker:/project/fbxchecker/fbxchecker/libs/fbx_parse/build",
             "console": "integratedTerminal"
         },
         {

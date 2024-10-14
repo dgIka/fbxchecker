@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class FbxValidator {
     public static void main(String[] args) throws IOException {
+        long startTime = System.currentTimeMillis();
+
         if (args.length == 0) {
             System.out.println("Пожалуйста, укажите путь к ZIP файлу.");
             return;
@@ -169,6 +171,10 @@ public class FbxValidator {
         } catch (IOException e) {
             System.out.println("Ошибка при удалении временных файлов: " + e.getMessage());
         }
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Время выполнения программы: " + (endTime - startTime) / 1000 + " секунд");
     }
 
     // Метод для извлечения базового имени из пути к архиву или файлу FBX
