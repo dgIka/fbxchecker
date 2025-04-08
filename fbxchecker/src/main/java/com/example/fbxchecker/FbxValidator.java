@@ -152,8 +152,8 @@ public class FbxValidator {
 
         // Сохранение результатов проверки в файл
         try {
-            Files.writeString(Path.of("validation_report.txt"), result.generateReport());
-            System.out.println("Check results saved: validation_report.txt");
+            Files.writeString(Path.of(baseName + "_report.txt"), result.generateReport());
+            System.out.println("Check results saved: " + baseName + "_report.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
